@@ -160,7 +160,6 @@
     text-decoration: underline;
 }
 
-/* Анимация появления */
 @keyframes fadeInScale {
     0% {
         opacity: 0;
@@ -172,7 +171,7 @@
     }
 }
 
-/* Адаптив */
+
 @media (max-width: 480px) {
     .auth-container {
         padding: 36px 24px 32px;

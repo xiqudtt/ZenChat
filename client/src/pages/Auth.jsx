@@ -31,7 +31,7 @@ export const Auth = () => {
             if (response.ok) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
-                navigate('/');
+                navigate('/home');
             } else {
                 handleError(data.message || 'Ошибка входа');
             }

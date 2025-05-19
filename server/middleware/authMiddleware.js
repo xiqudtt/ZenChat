@@ -8,10 +8,7 @@ const protect = async (req, res, next) => {
         req.headers.authorization.startsWith('Bearer ')
     ) {
         try {
-            // Получаем токен из заголовка
             token = req.headers.authorization.split(' ')[1];
-
-            // Проверяем токен
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             req.user = decoded;
             next();

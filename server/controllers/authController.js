@@ -7,27 +7,24 @@ const loginUser = async (req, res) => {
     const { username, password } = req.body;
 
     try {
-        // Находим пользователя по имени
+
         const user = await User.findOne({ username });
 
-        // Если пользователь не найден
         if (!user) {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
-        // Проверяем пароль с помощью метода matchPassword
         const isMatch = await user.matchPassword(password);
 
-        // Если пароль не совпадает
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid username or password' });
         }
 
-        // Возвращаем успешный ответ с токеном
+
         res.json({
             message: 'Login successful',
             username: user.username,
-            token: generateToken(user._id) // Генерируем JWT токен
+            token: generateToken(user._id)
         });
     } catch (error) {
         console.error('Login error:', error.message);

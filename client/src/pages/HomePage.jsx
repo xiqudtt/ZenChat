@@ -10,29 +10,40 @@ export default function HomePage() {
     const navigate = useNavigate();
     const token = localStorage.getItem('token');
     const socketUrl = 'http://localhost:5000';
-    console.log(localStorage.getItem('token'));
+
     const fetchMessages = async () => {
         try {
             const response = await fetch('http://localhost:5000/api/messages/general', {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${token}`
                 }
-            })
-            if (!response.ok) {
-                throw new Error('Failed to fetch messages')
+            });
+
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                navigate('/login');
+                return;
             }
-            const data = await response.json()
-            setMessages(data)
+
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки сообщений');
+            }
+
+            const data = await response.json();
+            setMessages(data);
         } catch (error) {
-            console.error(error)
+            console.error(error);
+            setError(error.message);
         }
-    }
+    };
 
     useEffect(() => {
         if (!token) {
             navigate('/register');
             return;
         }
+
+        fetchMessages();
 
         const socket = io(socketUrl, {
             auth: {
@@ -42,10 +53,11 @@ export default function HomePage() {
 
         socket.on('connect', () => {
             console.log('🟢 Connected to server');
+            socket.emit('requestHistory');
         });
 
-        socket.on('disconnect', () => {
-            console.log('🔴 Disconnected from server');
+        socket.on('history', (history) => {
+            setMessages(history);
         });
 
         socket.on('message', (newMessage) => {
@@ -61,7 +73,6 @@ export default function HomePage() {
             socket.disconnect();
         };
     }, [navigate, token]);
-
     const sendMessage = async () => {
         const sender = localStorage.getItem('username');
         console.log(sender)

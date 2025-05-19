@@ -14,7 +14,7 @@ export const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        // Валидация полей
+
         if (!username || !password || !confirmPassword) {
             return handleError('Пожалуйста, заполните все поля');
         }
@@ -41,7 +41,7 @@ export const Register = () => {
             if (response.ok) {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
-                navigate('/');
+                navigate('/home');
             } else {
                 handleError(data.message || 'Ошибка регистрации');
             }
@@ -53,7 +53,7 @@ export const Register = () => {
 
     const handleError = (message) => {
         setError(message);
-        setTimeout(() => setError(''), 3000);  // Скрываем ошибку через 3 секунды
+        setTimeout(() => setError(''), 3000);
     };
 
     return (
